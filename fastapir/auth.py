@@ -3,12 +3,15 @@ from typing import Optional
 from fastapi import APIRouter, Request, Form, status, Cookie, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from passlib.context import CryptContext
 
 from .db import fake_users_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 templates = Jinja2Templates(directory="fastapir/templates")
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def load_logged_in_user(user_id: Optional[int] = Cookie(None)):
@@ -31,7 +34,7 @@ def get_user(db, username: str):
 
 
 def verify_password(plain_password, hashed_password):
-    return plain_password == hashed_password
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def authenticate_user(db, username: str, password: str):
