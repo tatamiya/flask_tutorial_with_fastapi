@@ -21,7 +21,7 @@ def test_index():
 
 
 def test_index_after_login():
-    response = client.get("/", cookies={"username": "test_user"})
+    response = client.get("/", cookies={"user_id": "1"})
     assert b"Register" not in response.content
     assert b"Log In" not in response.content
     assert b"Log Out" in response.content

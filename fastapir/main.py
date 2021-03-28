@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Request, Cookie
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -22,7 +22,9 @@ def hello():
 
 
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request, username: Optional[str] = Cookie(None)):
+async def index(
+    request: Request, username: Optional[str] = Depends(auth.load_logged_in_user)
+):
     return templates.TemplateResponse(
         "index.html", {"request": request, "username": username}
     )
