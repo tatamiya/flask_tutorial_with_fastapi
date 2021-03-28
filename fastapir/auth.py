@@ -4,11 +4,11 @@ from fastapi import APIRouter, Request, Form, status, Cookie, Depends, HTTPExcep
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from .db import fake_users_db
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 templates = Jinja2Templates(directory="fastapir/templates")
-
-fake_users_db = {1: {"username": "test_user", "hashed_password": "test_password"}}
 
 
 async def load_logged_in_user(user_id: Optional[int] = Cookie(None)):
@@ -22,6 +22,25 @@ async def load_logged_in_user(user_id: Optional[int] = Cookie(None)):
 async def login_required(user_id: Optional[int] = Cookie(None)):
     if not user_id:
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+
+
+def get_user(db, username: str):
+    for user_id, user in db.items():
+        if username == user["username"]:
+            return user_id, user
+
+
+def verify_password(plain_password, hashed_password):
+    return plain_password == hashed_password
+
+
+def authenticate_user(db, username: str, password: str):
+    user_id, user = get_user(db, username)
+    if not user:
+        return None
+    if not verify_password(password, user.get("hashed_password")):
+        return None
+    return user_id
 
 
 @router.get("/login/", response_class=HTMLResponse)
@@ -38,13 +57,13 @@ async def login(
 @router.post("/login/", response_class=RedirectResponse)
 async def login_user_auth(username: str = Form(...), password: str = Form(...)):
 
-    for user_id, user in fake_users_db.items():
-        if username == user["username"] and password == user["hashed_password"]:
-            response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-            response.set_cookie(key="user_id", value=user_id)
-            return response
+    user_id = authenticate_user(fake_users_db, username, password)
+    if user_id is None:
+        raise HTTPException(status_code=400, detail="Inactive user")
 
-    raise HTTPException(status_code=400, detail="Inactive user")
+    response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+    response.set_cookie(key="user_id", value=user_id)
+    return response
 
 
 @router.get("/logout/", response_class=RedirectResponse)
