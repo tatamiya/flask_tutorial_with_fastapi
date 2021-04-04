@@ -1,7 +1,8 @@
 from fastapi.testclient import TestClient
 
 from fastapir.main import app
-from fastapir.auth import get_user_by_name, get_db
+from fastapir.db import crud
+from fastapir.auth import get_db
 
 client = TestClient(app)
 
@@ -49,7 +50,7 @@ class TestRegister:
         assert response.status_code == 200
 
         db = get_db()
-        user = get_user_by_name(db, "a")
+        user = crud.get_user_by_name(db, "a")
         assert user is not None
 
     def test_already_registered(self):
