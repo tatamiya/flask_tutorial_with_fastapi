@@ -48,6 +48,16 @@ def get_user(db, username: str):
             return user
 
 
+def create_user(db, username: str, password: str):
+    user_id = max(db.keys()) + 1
+    hashed_password = get_password_hashed(password)
+    db[user_id] = {
+        "username": username,
+        "hashed_password": hashed_password,
+    }
+    return user_id
+
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -108,15 +118,10 @@ async def register_user(
     if user:
         raise HTTPException(status_code=400, detail="Already registered")
 
-    new_user_id = max(db.keys()) + 1
-    hashed_password = get_password_hashed(password)
-    db[new_user_id] = {
-        "username": username,
-        "hashed_password": hashed_password,
-    }
+    user_id = create_user(db, username, password)
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    response.set_cookie(key="user_id", value=new_user_id)
+    response.set_cookie(key="user_id", value=user_id)
     return response
 
 
