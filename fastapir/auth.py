@@ -30,9 +30,9 @@ async def load_logged_in_user(
     user_id: Optional[int] = Cookie(None), db: Dict = Depends(get_db)
 ):
     if user_id:
-        user = db.get(user_id)
+        user = get_user_by_id(db, user_id)
         if user:
-            return user.get("username")
+            return user.username
     return None
 
 
@@ -41,11 +41,16 @@ async def login_required(user_id: Optional[int] = Cookie(None)):
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
 
 
-def get_user(db, username: str):
+def get_user_by_name(db, username: str):
     for user_id, user_in_db in db.items():
         if username == user_in_db["username"]:
             user = User(user_id=user_id, **user_in_db)
             return user
+
+
+def get_user_by_id(db, user_id: int):
+    user_in_db = db.get(user_id)
+    return User(user_id=user_id, **user_in_db)
 
 
 def create_user(db, username: str, password: str):
@@ -67,7 +72,7 @@ def get_password_hashed(password):
 
 
 def authenticate_user(db, username: str, password: str):
-    user: User = get_user(db, username)
+    user: User = get_user_by_name(db, username)
     if not user:
         return None
     if not verify_password(password, user.hashed_password):
@@ -114,7 +119,7 @@ async def register_user(
     username: str = Form(...), password: str = Form(...), db: Dict = Depends(get_db)
 ):
 
-    user = get_user(db, username)
+    user = get_user_by_name(db, username)
     if user:
         raise HTTPException(status_code=400, detail="Already registered")
 
