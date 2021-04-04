@@ -1,4 +1,7 @@
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
+
+from . import models
 
 
 class User(BaseModel):
@@ -7,22 +10,25 @@ class User(BaseModel):
     hashed_password: str
 
 
-def get_user_by_name(db, username: str):
-    for user_id, user_in_db in db.items():
-        if username == user_in_db["username"]:
-            user = User(user_id=user_id, **user_in_db)
-            return user
+class UserCreate(BaseModel):
+    username: str
+    hashed_password: str
 
 
-def get_user_by_id(db, user_id: int):
-    user_in_db = db.get(user_id)
-    return User(user_id=user_id, **user_in_db)
+def get_user_by_name(db: Session, username: str):
+    return db.query(models.User).filter(models.User.username == username).first()
 
 
-def create_user(db, username: str, hashed_password: str):
-    user_id = max(db.keys()) + 1
-    db[user_id] = {
-        "username": username,
-        "hashed_password": hashed_password,
-    }
-    return user_id
+def get_user_by_id(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+
+def create_user(db: Session, user: UserCreate):
+    db_user = models.User(
+        username=user.username,
+        hashed_password=user.hashed_password,
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

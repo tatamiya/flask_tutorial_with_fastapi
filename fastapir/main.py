@@ -6,6 +6,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from . import auth
+from .db import models
+from .db.database import engine
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
