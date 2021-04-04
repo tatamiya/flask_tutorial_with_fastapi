@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from fastapi import APIRouter, Request, Form, status, Cookie, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -6,7 +6,6 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from passlib.context import CryptContext
 
-from .db import fake_users_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -15,15 +14,23 @@ templates = Jinja2Templates(directory="fastapir/templates")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+def get_db():
+    from .db import fake_users_db
+
+    return fake_users_db
+
+
 class User(BaseModel):
     user_id: int
     username: str
     hashed_password: str
 
 
-async def load_logged_in_user(user_id: Optional[int] = Cookie(None)):
+async def load_logged_in_user(
+    user_id: Optional[int] = Cookie(None), db: Dict = Depends(get_db)
+):
     if user_id:
-        user = fake_users_db.get(user_id)
+        user = db.get(user_id)
         if user:
             return user.get("username")
     return None
@@ -70,9 +77,11 @@ async def login(
 
 
 @router.post("/login/", response_class=RedirectResponse)
-async def login_user_auth(username: str = Form(...), password: str = Form(...)):
+async def login_user_auth(
+    username: str = Form(...), password: str = Form(...), db: Dict = Depends(get_db)
+):
 
-    user_id = authenticate_user(fake_users_db, username, password)
+    user_id = authenticate_user(db, username, password)
     if user_id is None:
         raise HTTPException(status_code=400, detail="Inactive user")
 
@@ -91,15 +100,17 @@ async def register_page(
 
 
 @router.post("/register/", response_class=RedirectResponse)
-async def register_user(username: str = Form(...), password: str = Form(...)):
+async def register_user(
+    username: str = Form(...), password: str = Form(...), db: Dict = Depends(get_db)
+):
 
-    user = get_user(fake_users_db, username)
+    user = get_user(db, username)
     if user:
         raise HTTPException(status_code=400, detail="Already registered")
 
-    new_user_id = max(fake_users_db.keys()) + 1
+    new_user_id = max(db.keys()) + 1
     hashed_password = get_password_hashed(password)
-    fake_users_db[new_user_id] = {
+    db[new_user_id] = {
         "username": username,
         "hashed_password": hashed_password,
     }

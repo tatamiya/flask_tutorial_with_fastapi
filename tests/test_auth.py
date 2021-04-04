@@ -1,7 +1,8 @@
 from fastapi.testclient import TestClient
 
 from fastapir.main import app
-from fastapir.auth import get_user, fake_users_db
+from fastapir.auth import get_user
+from fastapir.db import fake_users_db
 
 client = TestClient(app)
 
