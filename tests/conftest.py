@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -5,10 +8,11 @@ from fastapir.main import app
 from fastapir.db import crud
 from fastapir.db.database import Base, get_db
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+test_db = tempfile.NamedTemporaryFile(suffix=".db")
+
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    "sqlite:///" + test_db.name, connect_args={"check_same_thread": False}
 )
 if Base.metadata.tables:
     Base.metadata.drop_all(bind=engine)
@@ -39,3 +43,4 @@ app.dependency_overrides[get_db] = override_get_db
 @app.on_event("shutdown")
 def teardown_db():
     Base.metadata.drop_all(bind=engine)
+    os.close(test_db)
