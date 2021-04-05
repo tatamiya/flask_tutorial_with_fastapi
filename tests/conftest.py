@@ -14,8 +14,6 @@ test_db = tempfile.NamedTemporaryFile(suffix=".db")
 engine = create_engine(
     "sqlite:///" + test_db.name, connect_args={"check_same_thread": False}
 )
-if Base.metadata.tables:
-    Base.metadata.drop_all(bind=engine)
 
 Base.metadata.create_all(bind=engine)
 
