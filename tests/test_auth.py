@@ -8,11 +8,10 @@ from .conftest import override_get_db
 client = TestClient(app)
 
 
-def test_login_page():
-    assert client.get("/auth/login").status_code == 200
-
-
 class TestLogin:
+    def test_login_page(self):
+        assert client.get("/auth/login").status_code == 200
+
     def test_valid_access(self):
 
         response = client.post(
