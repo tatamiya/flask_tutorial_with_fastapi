@@ -4,8 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from fastapir.main import app
 from fastapir.db import crud
-from fastapir.db.database import Base
-from fastapir.auth import get_db
+from fastapir.db.database import Base, get_db
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 

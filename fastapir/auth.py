@@ -7,21 +7,13 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from .db import crud
-from .db.database import SessionLocal
+from .db.database import get_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 templates = Jinja2Templates(directory="fastapir/templates")
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 async def load_logged_in_user(
