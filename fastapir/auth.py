@@ -3,8 +3,10 @@ from typing import Optional
 from fastapi import APIRouter, Request, Form, status, Cookie, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
+
 
 from .db import crud
 from .db.database import get_db
@@ -39,8 +41,14 @@ def get_password_hashed(password):
     return pwd_context.hash(password)
 
 
+class User(BaseModel):
+    user_id: int
+    username: str
+    hashed_password: str
+
+
 def authenticate_user(db: Session, username: str, password: str):
-    user: crud.User = crud.get_user_by_name(db, username)
+    user: User = crud.get_user_by_name(db, username)
     if not user:
         return None
     if not verify_password(password, user.hashed_password):

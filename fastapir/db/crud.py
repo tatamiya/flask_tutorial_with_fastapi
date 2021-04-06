@@ -4,12 +4,6 @@ from pydantic import BaseModel
 from . import models
 
 
-class User(BaseModel):
-    user_id: int
-    username: str
-    hashed_password: str
-
-
 class UserCreate(BaseModel):
     username: str
     hashed_password: str
