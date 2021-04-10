@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
@@ -7,6 +9,13 @@ from . import models
 class UserCreate(BaseModel):
     username: str
     hashed_password: str
+
+
+class PostCreate(BaseModel):
+    title: str
+    body: str
+    created_at: datetime.date
+    author_id: int
 
 
 def get_user_by_name(db: Session, username: str):
@@ -26,3 +35,16 @@ def create_user(db: Session, user: UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+def create_post(db: Session, post: PostCreate):
+    db_post = models.Post(
+        title=post.title,
+        body=post.body,
+        created_at=post.created_at,
+        author_id=post.author_id,
+    )
+    db.add(db_post)
+    db.commit()
+    db.refresh(db_post)
+    return db_post
