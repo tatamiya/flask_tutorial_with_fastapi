@@ -1,23 +1,12 @@
-import os
 import tempfile
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from fastapir.main import app
 from fastapir.db import crud
-from fastapir.db.database import Base, get_db
+from fastapir.db.database import get_db, create_db_session
 
 test_db = tempfile.NamedTemporaryFile(suffix=".db")
 
-
-engine = create_engine(
-    "sqlite:///" + test_db.name, connect_args={"check_same_thread": False}
-)
-
-Base.metadata.create_all(bind=engine)
-
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+TestingSessionLocal = create_db_session("sqlite:///" + test_db.name)
 
 
 def override_get_db():
@@ -36,9 +25,3 @@ for db in override_get_db():
     crud.create_user(db, test_user)
 
 app.dependency_overrides[get_db] = override_get_db
-
-
-@app.on_event("shutdown")
-def teardown_db():
-    Base.metadata.drop_all(bind=engine)
-    os.close(test_db)

@@ -4,11 +4,19 @@ from sqlalchemy.orm import sessionmaker
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./fastapir.db"
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+
+def create_db_session(database_url: str):
+
+    engine = create_engine(database_url, connect_args={"check_same_thread": False})
+    Base.metadata.create_all(bind=engine)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+    return SessionLocal
+
+
+SessionLocal = create_db_session(SQLALCHEMY_DATABASE_URL)
 
 
 def get_db():
