@@ -83,3 +83,65 @@ class TestEditPost:
     def test_invalid_access(self):
         response = client.get("/blog/2/update", cookies={"user_id": "2"})
         assert response.status_code == 401
+
+    def test_update_post(self):
+
+        response = client.put(
+            "/blog/2/update",
+            data={"title": "update post", "body": "update successfully"},
+            cookies={"user_id": "1"},
+            allow_redirects=True,
+        )
+        assert response.status_code == 200
+
+        assert b"new post" not in response.content
+        assert b"newly created for test" not in response.content
+
+        assert b"update post" in response.content
+        assert b"updated successfully" not in response.content
+
+    def test_update_without_authentication(self):
+        response = client.put(
+            "/blog/2/update",
+            data={"title": "invalid update", "body": "should not be updated"},
+            cookies={"user_id": None},
+            allow_redirects=True,
+        )
+        assert response.status_code == 401
+
+    def test_invalid_update(self):
+        response = client.put(
+            "/blog/2/update",
+            data={"title": "invalid update", "body": "should not be updated"},
+            cookies={"user_id": "2"},
+            allow_redirects=True,
+        )
+        assert response.status_code == 401
+
+    def test_delete_post(self):
+
+        response = client.delete(
+            "/blog/2/delete",
+            cookies={"user_id": "1"},
+            allow_redirects=True,
+        )
+        assert response.status_code == 200
+
+        assert b"update post" not in response.content
+        assert b"updated successfully" not in response.content
+
+    def test_delete_without_authentication(self):
+        response = client.delete(
+            "/blog/1/delete",
+            cookies={"user_id": None},
+            allow_redirects=True,
+        )
+        assert response.status_code == 401
+
+    def test_invalid_delete(self):
+        response = client.delete(
+            "/blog/1/delete",
+            cookies={"user_id": "2"},
+            allow_redirects=True,
+        )
+        assert response.status_code == 401
