@@ -66,6 +66,13 @@ def test_display_edit_link():
     assert b"Edit" in response.content
 
 
+def test_not_display_edit_link():
+    response = client.get("/", cookies={"user_id": "2"})
+
+    assert response.status_code == 200
+    assert b"Edit" not in response.content
+
+
 class TestEditPost:
     def test_display_page(self):
         response = client.get("/blog/2/update", cookies={"user_id": "1"})
