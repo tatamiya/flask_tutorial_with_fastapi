@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, lazyload
 from pydantic import BaseModel
 
 from . import models
@@ -48,3 +48,13 @@ def create_post(db: Session, post: PostCreate):
     db.commit()
     db.refresh(db_post)
     return db_post
+
+
+def get_posts(db: Session, skip: int = 0, limit: int = 100):
+    return (
+        db.query(models.Post)
+        .options(lazyload(models.Post.user))
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
