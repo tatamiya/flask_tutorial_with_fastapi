@@ -50,6 +50,15 @@ def create_post(db: Session, post: PostCreate):
     return db_post
 
 
+def get_post(db: Session, post_id: int):
+    return (
+        db.query(models.Post)
+        .options(lazyload(models.Post.user))
+        .filter(models.Post.id == post_id)
+        .first()
+    )
+
+
 def get_posts(db: Session, skip: int = 0, limit: int = 100):
     return (
         db.query(models.Post)

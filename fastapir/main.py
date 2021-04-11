@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, Cookie
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -34,9 +34,11 @@ def hello():
 async def index(
     request: Request,
     username: Optional[str] = Depends(auth.load_logged_in_user),
+    user_id: Optional[int] = Cookie(None),
     db: Session = Depends(get_db),
 ):
     posts = crud.get_posts(db)
     return templates.TemplateResponse(
-        "index.html", {"request": request, "username": username, "posts": posts}
+        "index.html",
+        {"request": request, "username": username, "user_id": user_id, "posts": posts},
     )

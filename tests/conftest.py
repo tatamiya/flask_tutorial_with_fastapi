@@ -33,6 +33,10 @@ test_user = crud.UserCreate(
     username="test_user",
     hashed_password="$2b$12$b0QaOkAp1tGptfKqW0JRBeSu1Vn9HGHusMf7BPSEbDkGxgbz5KXWS",
 )
+test_user2 = crud.UserCreate(
+    username="test_user2",
+    hashed_password="$2b$12$b0QaOkAp1tGptfKqW0JRBeSu1Vn9HGHusMf7BPSEbDkGxgbz5KXWS",
+)
 
 test_post = crud.PostCreate(
     title="test title",
@@ -43,6 +47,7 @@ test_post = crud.PostCreate(
 
 for db in override_get_db():
     crud.create_user(db, test_user)
+    crud.create_user(db, test_user2)
     crud.create_post(db, test_post)
 
 app.dependency_overrides[get_db] = override_get_db

@@ -47,3 +47,23 @@ async def register_user(
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     return response
+
+
+@router.get("/{id}/update", response_class=HTMLResponse)
+async def update_page(
+    id: int,
+    request: Request,
+    username: Optional[str] = Depends(load_logged_in_user),
+    user_id: Optional[int] = Cookie(None),
+    db: Session = Depends(get_db),
+):
+    if not username:
+        return RedirectResponse("/auth/login", status_code=status.HTTP_302_FOUND)
+
+    post = crud.get_post(db, id)
+    if post.author_id != user_id:
+        raise HTTPException(status_code=401, detail="Invalid Authentication")
+
+    return templates.TemplateResponse(
+        "update.html", {"request": request, "username": username, "post": post}
+    )

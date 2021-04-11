@@ -57,3 +57,22 @@ class TestCreateBlog:
             allow_redirects=True,
         )
         assert response.status_code == 401
+
+
+def test_display_edit_link():
+    response = client.get("/", cookies={"user_id": "1"})
+
+    assert response.status_code == 200
+    assert b"Edit" in response.content
+
+
+class TestEditPost:
+    def test_display_page(self):
+        response = client.get("/blog/2/update", cookies={"user_id": "1"})
+
+        assert response.status_code == 200
+        assert b'Edit "new post"' in response.content
+
+    def test_invalid_access(self):
+        response = client.get("/blog/2/update", cookies={"user_id": "2"})
+        assert response.status_code == 401
