@@ -7,10 +7,13 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from fastapir.db import crud
-from fastapir.db.database import get_db
+from fastapir.db.database import get_db, Base, engine
 
 from . import auth
 
+# Setup tables if no exists
+# This must be here.
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

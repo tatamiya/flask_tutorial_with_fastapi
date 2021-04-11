@@ -1,13 +1,24 @@
 import tempfile
 import datetime
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from fastapir.main import app
 from fastapir.db import crud
-from fastapir.db.database import get_db, create_db_session
+from fastapir.db.database import get_db, Base
 
 test_db = tempfile.NamedTemporaryFile(suffix=".db")
 
-TestingSessionLocal = create_db_session("sqlite:///" + test_db.name)
+# TestingSessionLocal = create_db_session()
+
+engine = create_engine(
+    "sqlite:///" + test_db.name, connect_args={"check_same_thread": False}
+)
+
+Base.metadata.create_all(bind=engine)
+
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def override_get_db():
