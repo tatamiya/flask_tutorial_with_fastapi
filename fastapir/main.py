@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from fastapir.db import crud
 from fastapir.db.database import get_db, Base, engine
 
-from . import auth
+from . import auth, blog
 
 # Setup tables if no exists
 # This must be here.
@@ -22,6 +22,7 @@ app.mount("/static", StaticFiles(directory="fastapir/static"), name="static")
 templates = Jinja2Templates(directory="fastapir/templates")
 
 app.include_router(auth.router)
+app.include_router(blog.router)
 
 
 @app.get("/hello")
