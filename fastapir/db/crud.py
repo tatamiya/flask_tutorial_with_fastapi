@@ -14,7 +14,7 @@ class UserCreate(BaseModel):
 class PostCreate(BaseModel):
     title: str
     body: str
-    created_at: datetime.date
+    created_at: datetime.datetime
     author_id: int
 
 

@@ -36,7 +36,7 @@ async def register_user(
     if not username:
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
-    created_at = datetime.datetime.now().date()
+    created_at = datetime.datetime.now()
     new_post = crud.PostCreate(
         title=title,
         body=body,

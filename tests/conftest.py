@@ -37,7 +37,7 @@ test_user = crud.UserCreate(
 test_post = crud.PostCreate(
     title="test title",
     body="test\nbody",
-    created_at=datetime.date(2021, 4, 1),
+    created_at=datetime.datetime(2021, 4, 1, 0, 0, 0),
     author_id=1,
 )
 
