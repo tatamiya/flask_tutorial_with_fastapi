@@ -54,6 +54,7 @@ def get_posts(db: Session, skip: int = 0, limit: int = 100):
     return (
         db.query(models.Post)
         .options(lazyload(models.Post.user))
+        .order_by(models.Post.id.desc())
         .offset(skip)
         .limit(limit)
         .all()
