@@ -1,8 +1,6 @@
 from fastapi.testclient import TestClient
 
 from fastapir.main import app
-from fastapir.db import crud
-from .conftest import override_get_db
 
 
 client = TestClient(app)
@@ -37,3 +35,25 @@ class TestCreateBlog:
             "/blog/create", cookies={"user_id": None}, allow_redirects=False
         )
         assert response.status_code != 200
+
+    def test_create_post(self):
+
+        response = client.post(
+            "/blog/create",
+            data={"title": "new post", "body": "newly created for test"},
+            cookies={"user_id": "1"},
+            allow_redirects=True,
+        )
+        assert response.status_code == 200
+
+        assert b"new post" in response.content
+        assert b"newly created for test" in response.content
+
+    def test_create_without_authentication(self):
+        response = client.post(
+            "/blog/create",
+            data={"title": "invalid post", "body": "should not be created"},
+            cookies={"user_id": None},
+            allow_redirects=True,
+        )
+        assert response.status_code == 401
