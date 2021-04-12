@@ -26,7 +26,7 @@ async def create_page(
 
 
 @router.post("/create/", response_class=RedirectResponse)
-async def register_user(
+async def create_post(
     title: str = Form(...),
     body: str = Form(...),
     username: Optional[str] = Depends(load_logged_in_user),
