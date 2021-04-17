@@ -6,6 +6,10 @@ from pydantic import BaseModel
 from . import models
 
 
+class AuthenticationError(Exception):
+    pass
+
+
 class UserCreate(BaseModel):
     username: str
     hashed_password: str
@@ -22,6 +26,11 @@ class PostUpdate(BaseModel):
     id: int
     title: str
     body: str
+    author_id: int
+
+
+class PostDelete(BaseModel):
+    id: int
     author_id: int
 
 
@@ -65,6 +74,14 @@ def update_post(db: Session, post: PostUpdate):
     post_in_db.body = post.body
     db.commit()
     return post_in_db
+
+
+def delete_post(db: Session, post: PostDelete):
+    post_in_db = db.query(models.Post).filter(models.Post.id == post.id).first()
+    if post_in_db.author_id != post.author_id:
+        raise AuthenticationError("Invalid Delete Request!")
+    db.delete(post_in_db)
+    db.commit()
 
 
 def get_post(db: Session, post_id: int):

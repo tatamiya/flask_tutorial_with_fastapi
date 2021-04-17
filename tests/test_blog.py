@@ -120,7 +120,7 @@ class TestEditPost:
 
     def test_delete_post(self):
 
-        response = client.delete(
+        response = client.post(
             "/blog/2/delete",
             cookies={"user_id": "1"},
             allow_redirects=True,
@@ -128,10 +128,10 @@ class TestEditPost:
         assert response.status_code == 200
 
         assert b"update post" not in response.content
-        assert b"updated successfully" not in response.content
+        assert b"update successfully" not in response.content
 
     def test_delete_without_authentication(self):
-        response = client.delete(
+        response = client.post(
             "/blog/1/delete",
             cookies={"user_id": None},
             allow_redirects=True,
@@ -139,7 +139,7 @@ class TestEditPost:
         assert response.status_code == 401
 
     def test_invalid_delete(self):
-        response = client.delete(
+        response = client.post(
             "/blog/1/delete",
             cookies={"user_id": "2"},
             allow_redirects=True,

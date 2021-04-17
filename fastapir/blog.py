@@ -88,3 +88,25 @@ async def update_post(
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     return response
+
+
+@router.post("/{id}/delete", response_class=RedirectResponse)
+async def delete_post(
+    id: int,
+    user: Optional[LoggedInUser] = Depends(load_logged_in_user),
+    db: Session = Depends(get_db),
+):
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid Authentication")
+
+    post_to_delete = crud.PostDelete(
+        id=id,
+        author_id=user.user_id,
+    )
+    try:
+        crud.delete_post(db, post_to_delete)
+    except crud.AuthenticationError:
+        raise HTTPException(status_code=401, detail="Invalid Authentication")
+
+    response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+    return response
