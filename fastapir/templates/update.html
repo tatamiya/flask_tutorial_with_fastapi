@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  <form method="put">
+  <form method="post">
     <label for="title">Title</label>
     <input name="title" id="title"
       value="{{ request.form['title'] or post['title'] }}" required>

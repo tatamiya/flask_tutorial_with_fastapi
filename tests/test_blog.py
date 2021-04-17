@@ -86,7 +86,7 @@ class TestEditPost:
 
     def test_update_post(self):
 
-        response = client.put(
+        response = client.post(
             "/blog/2/update",
             data={"title": "update post", "body": "update successfully"},
             cookies={"user_id": "1"},
@@ -101,7 +101,7 @@ class TestEditPost:
         assert b"updated successfully" not in response.content
 
     def test_update_without_authentication(self):
-        response = client.put(
+        response = client.post(
             "/blog/2/update",
             data={"title": "invalid update", "body": "should not be updated"},
             cookies={"user_id": None},
@@ -110,7 +110,7 @@ class TestEditPost:
         assert response.status_code == 401
 
     def test_invalid_update(self):
-        response = client.put(
+        response = client.post(
             "/blog/2/update",
             data={"title": "invalid update", "body": "should not be updated"},
             cookies={"user_id": "2"},

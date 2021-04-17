@@ -65,7 +65,7 @@ async def update_page(
     )
 
 
-@router.put("/{id}/update", response_class=RedirectResponse)
+@router.post("/{id}/update", response_class=RedirectResponse)
 async def update_post(
     id: int,
     title: str = Form(...),
