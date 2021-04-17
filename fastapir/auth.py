@@ -81,7 +81,7 @@ async def login_user_auth(
 
     user_id = authenticate_user(db, username, password)
     if user_id is None:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(status_code=400, detail="Authentication Failed")
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     response.set_cookie(key="user_id", value=user_id)
