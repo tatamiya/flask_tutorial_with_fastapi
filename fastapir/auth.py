@@ -63,12 +63,12 @@ def authenticate_user(db: Session, username: str, password: str):
 
 @router.get("/login/", response_class=HTMLResponse)
 async def login(
-    request: Request, username: Optional[str] = Depends(load_logged_in_user)
+    request: Request, user: Optional[LoggedInUser] = Depends(load_logged_in_user)
 ):
-    if username:
+    if user:
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     return templates.TemplateResponse(
-        "login.html", {"request": request, "username": username}
+        "login.html", {"request": request, "username": user}
     )
 
 
