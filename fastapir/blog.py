@@ -63,3 +63,28 @@ async def update_page(
     return templates.TemplateResponse(
         "update.html", {"request": request, "user": user, "post": post}
     )
+
+
+@router.put("/{id}/update", response_class=RedirectResponse)
+async def update_post(
+    id: int,
+    title: str = Form(...),
+    body: str = Form(...),
+    user: Optional[LoggedInUser] = Depends(load_logged_in_user),
+    db: Session = Depends(get_db),
+):
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid Authentication")
+
+    post_to_update = crud.PostUpdate(
+        id=id,
+        title=title,
+        body=body,
+        author_id=user.user_id,
+    )
+    updated_post = crud.update_post(db, post_to_update)
+    if updated_post is None:
+        raise HTTPException(status_code=401, detail="Invalid Authentication")
+
+    response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+    return response

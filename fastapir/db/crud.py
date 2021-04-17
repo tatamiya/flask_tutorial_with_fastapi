@@ -18,6 +18,13 @@ class PostCreate(BaseModel):
     author_id: int
 
 
+class PostUpdate(BaseModel):
+    id: int
+    title: str
+    body: str
+    author_id: int
+
+
 def get_user_by_name(db: Session, username: str):
     return db.query(models.User).filter(models.User.username == username).first()
 
@@ -48,6 +55,16 @@ def create_post(db: Session, post: PostCreate):
     db.commit()
     db.refresh(db_post)
     return db_post
+
+
+def update_post(db: Session, post: PostUpdate):
+    post_in_db = db.query(models.Post).filter(models.Post.id == post.id).first()
+    if post_in_db.author_id != post.author_id:
+        return None
+    post_in_db.title = post.title
+    post_in_db.body = post.body
+    db.commit()
+    return post_in_db
 
 
 def get_post(db: Session, post_id: int):
