@@ -75,11 +75,10 @@ def update_post(db: Session, post: PostUpdate):
     if post_in_db is None:
         raise NotFoundError("Post Not Found!")
     if post_in_db.author_id != post.author_id:
-        return None
+        raise AuthenticationError("Invalid Delete Request!")
     post_in_db.title = post.title
     post_in_db.body = post.body
     db.commit()
-    return post_in_db
 
 
 def delete_post(db: Session, post: PostDelete):

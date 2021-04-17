@@ -83,10 +83,10 @@ async def update_post(
         author_id=user.user_id,
     )
     try:
-        updated_post = crud.update_post(db, post_to_update)
+        crud.update_post(db, post_to_update)
     except crud.NotFoundError:
         raise HTTPException(status_code=404, detail="Resource Not Found")
-    if updated_post is None:
+    except crud.AuthenticationError:
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
