@@ -118,6 +118,15 @@ class TestEditPost:
         )
         assert response.status_code == 401
 
+    def test_update_not_found(self):
+        response = client.post(
+            "/blog/99/update",
+            data={"title": "does not exist", "body": "cannot be updated"},
+            cookies={"user_id": "1"},
+            allow_redirects=True,
+        )
+        assert response.status_code == 404
+
     def test_delete_post(self):
 
         response = client.post(
@@ -145,3 +154,11 @@ class TestEditPost:
             allow_redirects=True,
         )
         assert response.status_code == 401
+
+    def test_delete_not_found(self):
+        response = client.post(
+            "/blog/99/delete",
+            cookies={"user_id": "1"},
+            allow_redirects=True,
+        )
+        assert response.status_code == 404

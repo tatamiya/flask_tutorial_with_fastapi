@@ -10,6 +10,10 @@ class AuthenticationError(Exception):
     pass
 
 
+class NotFoundError(Exception):
+    pass
+
+
 class UserCreate(BaseModel):
     username: str
     hashed_password: str
@@ -68,6 +72,8 @@ def create_post(db: Session, post: PostCreate):
 
 def update_post(db: Session, post: PostUpdate):
     post_in_db = db.query(models.Post).filter(models.Post.id == post.id).first()
+    if post_in_db is None:
+        raise NotFoundError("Post Not Found!")
     if post_in_db.author_id != post.author_id:
         return None
     post_in_db.title = post.title
@@ -78,6 +84,8 @@ def update_post(db: Session, post: PostUpdate):
 
 def delete_post(db: Session, post: PostDelete):
     post_in_db = db.query(models.Post).filter(models.Post.id == post.id).first()
+    if post_in_db is None:
+        raise NotFoundError("Post Not Found!")
     if post_in_db.author_id != post.author_id:
         raise AuthenticationError("Invalid Delete Request!")
     db.delete(post_in_db)

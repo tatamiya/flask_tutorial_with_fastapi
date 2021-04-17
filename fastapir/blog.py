@@ -82,7 +82,10 @@ async def update_post(
         body=body,
         author_id=user.user_id,
     )
-    updated_post = crud.update_post(db, post_to_update)
+    try:
+        updated_post = crud.update_post(db, post_to_update)
+    except crud.NotFoundError:
+        raise HTTPException(status_code=404, detail="Resource Not Found")
     if updated_post is None:
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
@@ -105,6 +108,8 @@ async def delete_post(
     )
     try:
         crud.delete_post(db, post_to_delete)
+    except crud.NotFoundError:
+        raise HTTPException(status_code=404, detail="Resource Not Found")
     except crud.AuthenticationError:
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
