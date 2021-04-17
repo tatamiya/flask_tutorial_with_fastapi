@@ -6,22 +6,7 @@ from fastapir.main import app
 client = TestClient(app)
 
 
-def test_display_content():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert b"test title" in response.content
-    assert b"by test_user on 2021-04-01" in response.content
-    assert b"test\nbody" in response.content
-
-
-def test_display_new_link():
-    response = client.get("/", cookies={"user_id": "1"})
-
-    assert response.status_code == 200
-    assert b"New" in response.content
-
-
-class TestCreateBlog:
+class TestCreatePost:
     def test_display_page(self):
         response = client.get("/blog/create", cookies={"user_id": "1"})
 
@@ -59,21 +44,7 @@ class TestCreateBlog:
         assert response.status_code == 401
 
 
-def test_display_edit_link():
-    response = client.get("/", cookies={"user_id": "1"})
-
-    assert response.status_code == 200
-    assert b"Edit" in response.content
-
-
-def test_not_display_edit_link():
-    response = client.get("/", cookies={"user_id": "2"})
-
-    assert response.status_code == 200
-    assert b"Edit" not in response.content
-
-
-class TestEditPost:
+class TestDisplayEditPage:
     def test_display_page(self):
         response = client.get("/blog/2/update", cookies={"user_id": "1"})
 
@@ -84,6 +55,8 @@ class TestEditPost:
         response = client.get("/blog/2/update", cookies={"user_id": "2"})
         assert response.status_code == 401
 
+
+class TestUpdatePost:
     def test_update_post(self):
 
         response = client.post(
@@ -127,6 +100,8 @@ class TestEditPost:
         )
         assert response.status_code == 404
 
+
+class TestDeletePost:
     def test_delete_post(self):
 
         response = client.post(
