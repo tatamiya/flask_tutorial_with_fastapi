@@ -18,13 +18,24 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 templates = Jinja2Templates(directory="fastapir/templates")
 
 
+class LoggedInUser(BaseModel):
+    user_id: int
+    username: str
+
+
+class User(BaseModel):
+    user_id: int
+    username: str
+    hashed_password: str
+
+
 async def load_logged_in_user(
     user_id: Optional[int] = Cookie(None), db: Session = Depends(get_db)
 ):
     if user_id:
         user = crud.get_user_by_id(db, user_id)
         if user:
-            return user.username
+            return LoggedInUser(user_id=user.id, username=user.username)
     return None
 
 
@@ -39,12 +50,6 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hashed(password):
     return pwd_context.hash(password)
-
-
-class User(BaseModel):
-    user_id: int
-    username: str
-    hashed_password: str
 
 
 def authenticate_user(db: Session, username: str, password: str):

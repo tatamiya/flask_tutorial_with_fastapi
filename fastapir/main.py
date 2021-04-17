@@ -33,12 +33,11 @@ def hello():
 @app.get("/", response_class=HTMLResponse)
 async def index(
     request: Request,
-    username: Optional[str] = Depends(auth.load_logged_in_user),
-    user_id: Optional[int] = Cookie(None),
+    user: Optional[auth.LoggedInUser] = Depends(auth.load_logged_in_user),
     db: Session = Depends(get_db),
 ):
     posts = crud.get_posts(db)
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "username": username, "user_id": user_id, "posts": posts},
+        {"request": request, "user": user, "posts": posts},
     )
