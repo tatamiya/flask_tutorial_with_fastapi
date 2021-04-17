@@ -20,7 +20,9 @@ async def create_page(
 ):
     if not user:
         return RedirectResponse("/auth/login", status_code=status.HTTP_302_FOUND)
-    return templates.TemplateResponse("create.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        "blog/create.html", {"request": request, "user": user}
+    )
 
 
 @router.post("/create/", response_class=RedirectResponse)
@@ -61,7 +63,7 @@ async def update_page(
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
     return templates.TemplateResponse(
-        "update.html", {"request": request, "user": user, "post": post}
+        "blog/update.html", {"request": request, "user": user, "post": post}
     )
 
 

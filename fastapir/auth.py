@@ -68,7 +68,7 @@ async def login(
     if user:
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     return templates.TemplateResponse(
-        "login.html", {"request": request, "username": user}
+        "auth/login.html", {"request": request, "username": user}
     )
 
 
@@ -94,7 +94,7 @@ async def register_page(
 ):
     if username:
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    return templates.TemplateResponse("register.html", {"request": request})
+    return templates.TemplateResponse("auth/register.html", {"request": request})
 
 
 @router.post("/register/", response_class=RedirectResponse)
