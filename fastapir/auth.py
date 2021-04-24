@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Request, Form, status, Depends, HTTPException
+from fastapi import APIRouter, Request, Form, status, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -82,7 +82,10 @@ async def login_user_auth(
 
     user_id = authenticate_user(db, username, password)
     if user_id is None:
-        raise HTTPException(status_code=400, detail="Authentication Failed")
+        flashes = request.session.get("flashes", [])
+        flashes.append("Authentication failed")
+        request.session["flashes"] = flashes
+        return RedirectResponse("/auth/login/", status_code=status.HTTP_302_FOUND)
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     request.session["user_id"] = user_id
@@ -108,7 +111,10 @@ async def register_user(
 
     user = crud.get_user_by_name(db, username)
     if user:
-        raise HTTPException(status_code=400, detail="Already registered")
+        flashes = request.session.get("flashes", [])
+        flashes.append("Already registered")
+        request.session["flashes"] = flashes
+        return RedirectResponse("/auth/register/", status_code=status.HTTP_302_FOUND)
 
     hashed_password = get_password_hashed(password)
     new_user = crud.UserCreate(username=username, hashed_password=hashed_password)

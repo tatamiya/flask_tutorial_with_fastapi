@@ -19,10 +19,8 @@
   <header>
     {% block header %}{% endblock %}
   </header>
-{#
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
+  {% for _ in request.session.get('flashes', []) %}
+    <div class="flash">{{ request.session['flashes'].pop(0) }}</div>
   {% endfor %}
-#}
   {% block content %}{% endblock %}
 </section>
