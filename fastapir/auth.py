@@ -29,9 +29,8 @@ class User(BaseModel):
     hashed_password: str
 
 
-async def load_logged_in_user(
-    user_id: Optional[int] = Cookie(None), db: Session = Depends(get_db)
-):
+async def load_logged_in_user(request: Request, db: Session = Depends(get_db)):
+    user_id = request.session.get("user_id")
     if user_id:
         user = crud.get_user_by_id(db, user_id)
         if user:
@@ -39,7 +38,8 @@ async def load_logged_in_user(
     return None
 
 
-async def login_required(user_id: Optional[int] = Cookie(None)):
+async def login_required(request: Request):
+    user_id = request.session.get("user_id")
     if not user_id:
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
 
@@ -74,6 +74,7 @@ async def login(
 
 @router.post("/login/", response_class=RedirectResponse)
 async def login_user_auth(
+    request: Request,
     username: str = Form(...),
     password: str = Form(...),
     db: Session = Depends(get_db),
@@ -84,7 +85,7 @@ async def login_user_auth(
         raise HTTPException(status_code=400, detail="Authentication Failed")
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    response.set_cookie(key="user_id", value=user_id)
+    request.session["user_id"] = user_id
     return response
 
 
@@ -120,5 +121,5 @@ async def register_user(
 @router.get("/logout/", response_class=RedirectResponse)
 async def logout():
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    response.delete_cookie("user_id")
+    response.delete_cookie("session")
     return response

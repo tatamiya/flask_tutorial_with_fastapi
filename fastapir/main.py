@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 
 from fastapir.db import crud
@@ -23,6 +24,12 @@ templates = Jinja2Templates(directory="fastapir/templates")
 
 app.include_router(auth.router)
 app.include_router(blog.router)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key="hoge",
+    max_age=60,
+)
 
 
 @app.get("/hello")
