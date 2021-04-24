@@ -28,7 +28,7 @@ app.include_router(blog.router)
 app.add_middleware(
     SessionMiddleware,
     secret_key="hoge",
-    max_age=60,
+    max_age=15 * 60,
 )
 
 
