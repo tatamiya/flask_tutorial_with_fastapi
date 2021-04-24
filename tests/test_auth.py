@@ -21,7 +21,7 @@ class TestLogin:
             data={"username": "test_user", "password": "invalid_password"},
             allow_redirects=True,
         )
-        assert response.status_code == 400
+        assert b"Authentication failed" in response.content
 
 
 def test_logout(client):
@@ -54,4 +54,4 @@ class TestRegister:
             data={"username": "test_user", "password": "test"},
             allow_redirects=True,
         )
-        assert response.status_code == 400
+        assert b"Already registered" in response.content
