@@ -1,18 +1,12 @@
-from fastapi.testclient import TestClient
-
-from fastapir.main import app
 from fastapir.db import crud
 from .conftest import override_get_db
 
 
-client = TestClient(app)
-
-
 class TestLogin:
-    def test_login_page(self):
+    def test_login_page(self, client):
         assert client.get("/auth/login").status_code == 200
 
-    def test_valid_access(self):
+    def test_valid_access(self, client):
 
         response = client.post(
             "/auth/login",
@@ -21,7 +15,7 @@ class TestLogin:
         )
         assert response.status_code == 200
 
-    def test_invalid_access(self):
+    def test_invalid_access(self, client):
         response = client.post(
             "/auth/login",
             data={"username": "test_user", "password": "invalid_password"},
@@ -30,17 +24,17 @@ class TestLogin:
         assert response.status_code == 400
 
 
-def test_logout():
+def test_logout(client):
 
     response = client.get("/auth/logout", cookies={"username": "test_user"})
     assert response.status_code == 200
 
 
 class TestRegister:
-    def test_register_page(self):
+    def test_register_page(self, client):
         assert client.get("/auth/register").status_code == 200
 
-    def test_register_user(self):
+    def test_register_user(self, client):
 
         response = client.post(
             "/auth/register",
@@ -53,7 +47,7 @@ class TestRegister:
             user = crud.get_user_by_name(db, "a")
         assert user is not None
 
-    def test_already_registered(self):
+    def test_already_registered(self, client):
 
         response = client.post(
             "/auth/register",

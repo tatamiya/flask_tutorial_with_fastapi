@@ -1,12 +1,15 @@
 import tempfile
 import datetime
+import pytest
 
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from fastapir.main import app
 from fastapir.db import crud
 from fastapir.db.database import get_db, Base
+
 
 test_db = tempfile.NamedTemporaryFile(suffix=".db")
 
@@ -51,3 +54,18 @@ for db in override_get_db():
     crud.create_post(db, test_post)
 
 app.dependency_overrides[get_db] = override_get_db
+
+
+@pytest.fixture
+def client():
+    return TestClient(app)
+
+
+def login(client, username="test_user", password="test_password"):
+
+    response = client.post(
+        "/auth/login",
+        data={"username": username, "password": password},
+        allow_redirects=True,
+    )
+    return response
