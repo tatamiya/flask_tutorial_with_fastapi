@@ -100,6 +100,7 @@ async def register_page(
 
 @router.post("/register/", response_class=RedirectResponse)
 async def register_user(
+    request: Request,
     username: str = Form(...),
     password: str = Form(...),
     db: Session = Depends(get_db),
@@ -114,7 +115,7 @@ async def register_user(
     created_user = crud.create_user(db, new_user)
 
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    response.set_cookie(key="user_id", value=created_user.id)
+    request.session["user_id"] = created_user.id
     return response
 
 
