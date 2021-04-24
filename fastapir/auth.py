@@ -1,12 +1,11 @@
 from typing import Optional
 
-from fastapi import APIRouter, Request, Form, status, Depends
+from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
 from passlib.context import CryptContext
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-
 
 from .db import crud
 from .db.database import get_db

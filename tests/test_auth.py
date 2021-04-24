@@ -1,5 +1,6 @@
 from fastapir.db import crud
-from .conftest import override_get_db, login
+
+from .conftest import login, override_get_db
 
 
 class TestLogin:

@@ -1,12 +1,12 @@
 import datetime
 from typing import Optional
 
-from fastapi import APIRouter, Request, Form, status, Depends, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from fastapir.auth import load_logged_in_user, LoggedInUser
+from fastapir.auth import LoggedInUser, load_logged_in_user
 from fastapir.db import crud
 from fastapir.db.database import get_db
 

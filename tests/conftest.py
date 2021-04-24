@@ -1,15 +1,14 @@
-import tempfile
 import datetime
-import pytest
+import tempfile
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from fastapir.main import app
 from fastapir.db import crud
-from fastapir.db.database import get_db, Base
-
+from fastapir.db.database import Base, get_db
+from fastapir.main import app
 
 test_db = tempfile.NamedTemporaryFile(suffix=".db")
 

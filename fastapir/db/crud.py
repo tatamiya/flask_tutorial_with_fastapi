@@ -1,7 +1,7 @@
 import datetime
 
-from sqlalchemy.orm import Session, lazyload
 from pydantic import BaseModel
+from sqlalchemy.orm import Session, lazyload
 
 from . import models
 

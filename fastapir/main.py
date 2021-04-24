@@ -1,14 +1,14 @@
 from typing import Optional
 
-from fastapi import FastAPI, Request, Depends
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
+from starlette.middleware.sessions import SessionMiddleware
 
 from fastapir.db import crud
-from fastapir.db.database import get_db, Base, engine
+from fastapir.db.database import Base, engine, get_db
 
 from . import auth, blog
 
