@@ -1,5 +1,5 @@
 from fastapir.db import crud
-from .conftest import override_get_db
+from .conftest import override_get_db, login
 
 
 class TestLogin:
@@ -25,9 +25,12 @@ class TestLogin:
 
 
 def test_logout(client):
+    _ = login(client)
+    resp_before_logout = client.get("/")
+    assert b"Log Out" in resp_before_logout.content
 
-    response = client.get("/auth/logout", cookies={"username": "test_user"})
-    assert response.status_code == 200
+    resp_after_logout = client.get("/auth/logout")
+    assert b"Log Out" not in resp_after_logout.content
 
 
 class TestRegister:

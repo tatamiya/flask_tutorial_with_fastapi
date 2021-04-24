@@ -126,7 +126,7 @@ async def register_user(
 
 
 @router.get("/logout/", response_class=RedirectResponse)
-async def logout():
+async def logout(request: Request):
     response = RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    response.delete_cookie("session")
+    request.session.clear()
     return response
