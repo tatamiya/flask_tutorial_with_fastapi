@@ -1,5 +1,9 @@
 runtime: python39
 entrypoint: uvicorn fastapir.main:app --port $PORT
+
 handlers:
 - url: /fastapir/static
   static_dir: fastapir/static
+
+env_variables:
+  SESSION_SECRET_KEY: ${SESSION_SECRET_KEY}

@@ -23,5 +23,6 @@ testCSRF
 .pytest_cache
 .venv
 .vscode
+.env
 pyproject.toml
 poetry.lock
