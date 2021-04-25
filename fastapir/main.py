@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
+from fastapir.config import Settings
 from fastapir.db import crud
 from fastapir.db.database import Base, engine, get_db
 
@@ -27,7 +28,7 @@ app.include_router(blog.router)
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="hoge",
+    secret_key=Settings().session_secret_key,
     max_age=15 * 60,
 )
 

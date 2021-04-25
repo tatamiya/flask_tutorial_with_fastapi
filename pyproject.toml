@@ -15,6 +15,7 @@ python-multipart = "^0.0.5"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 SQLAlchemy = "^1.4.5"
 itsdangerous = "^1.1.0"
+pydantic = {extras = ["dotenv"], version = "^1.8.1"}
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
