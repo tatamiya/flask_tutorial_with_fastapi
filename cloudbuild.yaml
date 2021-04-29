@@ -18,7 +18,7 @@ steps:
     args:
       [
         "-c",
-        "cp /temporary/requirements.txt . && gcloud config set app/cloud_build_timeout 1600 && SESSION_SECRET_KEY=$SESSION_SECRET_KEY DATABASE_URL=$DATABASE_URL envsubst < app.yaml > app.yaml && gcloud app deploy",
+        "cp /temporary/requirements.txt . && gcloud config set app/cloud_build_timeout 1600 && SESSION_SECRET_KEY=$SESSION_SECRET_KEY DATABASE_URL=$DATABASE_URL envsubst < app.yaml > app.yaml.template && gcloud app deploy",
       ]
     env:
       - "SESSION_SECRET_KEY=${_SESSION_SECRET_KEY}"
