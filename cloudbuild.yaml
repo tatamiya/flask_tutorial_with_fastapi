@@ -12,10 +12,7 @@ steps:
   - name: 'vol1'
     path: '/temporary'
   entrypoint: 'bash'
-  args: ['cp', '/temporary/requirements.txt', '.']
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'bash'
-  args: ['-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy']
+  args: ['-c', 'cp /temporary/requirements.txt . && gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy']
   env:
     - 'SESSION_SECRET_KEY=${_SESSION_SECRET_KEY}'
 timeout: '1600s'
