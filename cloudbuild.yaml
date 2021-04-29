@@ -22,4 +22,5 @@ steps:
       ]
     env:
       - "SESSION_SECRET_KEY=${_SESSION_SECRET_KEY}"
+      - "DATABASE_URL=${_DATABASE_URL}"
 timeout: "1600s"
