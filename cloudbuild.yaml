@@ -18,6 +18,6 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'bash'
   args: ['-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy']
-timeout: '1600s'
   env:
     - 'SESSION_SECRET_KEY=${_SESSION_SECRET_KEY}'
+timeout: '1600s'
