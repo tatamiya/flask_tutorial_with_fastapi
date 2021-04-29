@@ -5,7 +5,7 @@ steps:
   volumes:
   - name: 'vol1'
     path: '/temporary'
-  args: ['poetry', 'build', "export", "-f", "requirements.txt", "--without-hashes", "--output", "/temporary/requirements.txt"]
+  args: ['poetry', "export", "-f", "requirements.txt", "--without-hashes", "--output", "/temporary/requirements.txt"]
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   volumes:
