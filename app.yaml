@@ -6,5 +6,5 @@ handlers:
     static_dir: fastapir/static
 
 env_variables:
-  SESSION_SECRET_KEY: ${SESSION_SECRET_KEY}
-  DATABASE_URL: ${DATABASE_URL}
+  SESSION_SECRET_KEY: $SESSION_SECRET_KEY
+  DATABASE_URL: $DATABASE_URL
