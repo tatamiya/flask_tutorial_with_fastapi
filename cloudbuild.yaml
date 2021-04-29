@@ -1,13 +1,11 @@
 steps:
-- name: python
-  entrypoint: pip
-  args: ["install", "-U", "poetry"]
-- name: python
+- name: 'docker'
+  args: ["build", "-t", "gcr.io/${PROJECT_ID}/poetry_image_for_cloud_build:latest", "."]
+- name: 'gcr.io/${PROJECT_ID}/poetry_image_for_cloud_build:latest'
   volumes:
   - name: 'vol1'
     path: '/temporary'
-  entrypoint: python
-  args: ["-m", "poetry", "export", "-f", "requirements.txt", "--without-hashes", "--output", "/temporary/requirements.txt"]
+  args: ['poetry', 'build', "export", "-f", "requirements.txt", "--without-hashes", "--output", "/temporary/requirements.txt"]
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   volumes:
