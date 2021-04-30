@@ -20,7 +20,4 @@ steps:
         "-c",
         "cp /temporary/requirements.txt . && apt-get install gettext-base && gcloud config set app/cloud_build_timeout 1600 && SESSION_SECRET_KEY=${_SESSION_SECRET_KEY} DATABASE_URL=${_DATABASE_URL} envsubst '$$SESSION_SECRET_KEY $$DATABASE_URL' < app.yaml.template > app.yaml && gcloud app deploy",
       ]
-    env:
-      - "SESSION_SECRET_KEY=${_SESSION_SECRET_KEY}"
-      - "DATABASE_URL=${_DATABASE_URL}"
 timeout: "1600s"

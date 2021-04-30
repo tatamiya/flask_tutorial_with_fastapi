@@ -19,10 +19,7 @@ __pycache__/
 /setup.cfg
 
 tests
-testCSRF
-.pytest_cache
-.venv
-.vscode
-.env
 pyproject.toml
 poetry.lock
+cloudbuild.yaml
+README.md
