@@ -9,7 +9,7 @@ from fastapir.config import Settings
 SQLALCHEMY_DATABASE_URL = Settings().database_url
 
 if os.getenv("GAE_APPLICATION", None):
-    connect_args = None
+    connect_args = {}
 else:
     connect_args = {"check_same_thread": False}
 
