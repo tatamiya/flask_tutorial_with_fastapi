@@ -17,7 +17,7 @@ from . import auth, blog
 # This must be here.
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(**settings.app_settings)
 
 app.mount("/static", StaticFiles(directory="fastapir/static"), name="static")
 
