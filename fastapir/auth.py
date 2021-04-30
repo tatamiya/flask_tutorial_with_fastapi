@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from .db import crud
+from .db import crud, models
 from .db.database import get_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -67,14 +67,19 @@ async def login(
     if user:
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     return templates.TemplateResponse(
-        "auth/login.html", {"request": request, "username": user}
+        "auth/login.html",
+        {
+            "request": request,
+            "username": user,
+            "username_maxlength": models.MAX_USERNAME_LENGTH,
+        },
     )
 
 
 @router.post("/login/", response_class=RedirectResponse)
 async def login_user_auth(
     request: Request,
-    username: str = Form(...),
+    username: str = Form(..., max_length=models.MAX_USERNAME_LENGTH),
     password: str = Form(...),
     db: Session = Depends(get_db),
 ):
@@ -97,13 +102,16 @@ async def register_page(
 ):
     if user:
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    return templates.TemplateResponse("auth/register.html", {"request": request})
+    return templates.TemplateResponse(
+        "auth/register.html",
+        {"request": request, "username_maxlength": models.MAX_USERNAME_LENGTH},
+    )
 
 
 @router.post("/register/", response_class=RedirectResponse)
 async def register_user(
     request: Request,
-    username: str = Form(...),
+    username: str = Form(..., max_length=models.MAX_USERNAME_LENGTH),
     password: str = Form(...),
     db: Session = Depends(get_db),
 ):

@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from fastapir.auth import LoggedInUser, load_logged_in_user
-from fastapir.db import crud
+from fastapir.db import crud, models
 from fastapir.db.database import get_db
 
 router = APIRouter(prefix="/blog", tags=["blog"])
@@ -21,14 +21,20 @@ async def create_page(
     if not user:
         return RedirectResponse("/auth/login", status_code=status.HTTP_302_FOUND)
     return templates.TemplateResponse(
-        "blog/create.html", {"request": request, "user": user}
+        "blog/create.html",
+        {
+            "request": request,
+            "user": user,
+            "title_maxlength": models.MAX_BLOG_TITLE_LENGTH,
+            "body_maxlength": models.MAX_BLOG_BODY_LENTGH,
+        },
     )
 
 
 @router.post("/create/", response_class=RedirectResponse)
 async def create_post(
-    title: str = Form(...),
-    body: str = Form(...),
+    title: str = Form(..., max_length=models.MAX_BLOG_TITLE_LENGTH),
+    body: str = Form(..., max_length=models.MAX_BLOG_BODY_LENTGH),
     user: Optional[LoggedInUser] = Depends(load_logged_in_user),
     db: Session = Depends(get_db),
 ):
@@ -66,15 +72,22 @@ async def update_page(
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
     return templates.TemplateResponse(
-        "blog/update.html", {"request": request, "user": user, "post": post}
+        "blog/update.html",
+        {
+            "request": request,
+            "user": user,
+            "post": post,
+            "title_maxlength": models.MAX_BLOG_TITLE_LENGTH,
+            "body_maxlength": models.MAX_BLOG_BODY_LENTGH,
+        },
     )
 
 
 @router.post("/{id}/update", response_class=RedirectResponse)
 async def update_post(
     id: int,
-    title: str = Form(...),
-    body: str = Form(...),
+    title: str = Form(..., max_length=models.MAX_BLOG_TITLE_LENGTH),
+    body: str = Form(..., max_length=models.MAX_BLOG_BODY_LENTGH),
     user: Optional[LoggedInUser] = Depends(load_logged_in_user),
     db: Session = Depends(get_db),
 ):
