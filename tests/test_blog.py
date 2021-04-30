@@ -51,6 +51,11 @@ class TestDisplayEditPage:
         response = client.get("/blog/2/update")
         assert response.status_code == 401
 
+    def test_not_found(self, client):
+        _ = login(client)
+        response = client.get("/blog/99/update")
+        response.status_code == 404
+
 
 class TestUpdatePost:
     def test_update_post(self, client):

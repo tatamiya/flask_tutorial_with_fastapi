@@ -59,6 +59,9 @@ async def update_page(
         return RedirectResponse("/auth/login", status_code=status.HTTP_302_FOUND)
 
     post = crud.get_post(db, id)
+
+    if post is None:
+        raise HTTPException(status_code=404, detail="Resource Not Found")
     if post.author_id != user.user_id:
         raise HTTPException(status_code=401, detail="Invalid Authentication")
 
