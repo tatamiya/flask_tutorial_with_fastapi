@@ -4,9 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from fastapir.config import Settings
+from fastapir.config import settings
 
-SQLALCHEMY_DATABASE_URL = Settings().database_url
+SQLALCHEMY_DATABASE_URL = settings.database_url
 
 if os.getenv("GAE_APPLICATION", None):
     connect_args = {}
