@@ -7,11 +7,10 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
+from fastapir import auth, blog
 from fastapir.config import settings
 from fastapir.db import crud
 from fastapir.db.database import Base, engine, get_db
-
-from . import auth, blog
 
 # Setup tables if no exists
 # This must be here.

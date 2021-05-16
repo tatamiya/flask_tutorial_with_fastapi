@@ -3,7 +3,7 @@ import datetime
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, lazyload
 
-from . import models
+from fastapir.db import models
 
 
 class AuthenticationError(Exception):
