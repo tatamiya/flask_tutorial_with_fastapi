@@ -22,4 +22,4 @@ jobs:
           poetry run flake8 . --count --ignore E501 --show-source --statistics
       - name: Test with pytest
         run: |
-          portry run pytest
+          poetry run pytest
