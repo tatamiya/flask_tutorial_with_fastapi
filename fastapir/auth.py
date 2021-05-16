@@ -52,7 +52,7 @@ def get_password_hashed(password):
 
 
 def authenticate_user(db: Session, username: str, password: str):
-    user: User = crud.get_user_by_name(db, username)
+    user: models.User = crud.get_user_by_name(db, username)
     if not user:
         return None
     if not verify_password(password, user.hashed_password):
