@@ -20,6 +20,15 @@ jobs:
       - name: Lint with flake8
         run: |
           poetry run flake8 . --count --ignore E501 --show-source --statistics
+      - name: Lint with black
+        run: |
+          poetry run black . --check
+      - name: Run isort
+        run: |
+          poetry run isort . --check-only --profile black
+      - name: Run mypy
+        run: |
+          poetry run mypy .
       - name: Test with pytest
         env:
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
