@@ -28,7 +28,7 @@ jobs:
           poetry run isort . --check-only --profile black
       - name: Run mypy
         run: |
-          poetry run mypy .
+          poetry run mypy . --ignore-missing-imports
       - name: Test with pytest
         env:
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
