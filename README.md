@@ -1,5 +1,5 @@
 # Flask Tutorial with FastAPI
-https://flask.palletsprojects.com/en/1.1.x/tutorial/
+Translation of [Flask tutorial apps](https://flask.palletsprojects.com/en/1.1.x/tutorial/) by [FastAPI](https://fastapi.tiangolo.com/)
 
 # Run
 ```
